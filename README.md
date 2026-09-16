@@ -89,7 +89,7 @@ public/
 - [ ] Fotografias reais da equipa/serviços (atualmente usa apenas
       formas em CSS/SVG, sem imagens externas)
 - [ ] Domínio definitivo (atualizado em `app/layout.tsx`, `app/sitemap.ts`
-      e `app/robots.ts`, atualmente `https://www.portiarclimatizacao.pt`)
+      e `app/robots.ts`, atualmente `https://www.portiar.pt`)
 
 ## Licença
 
