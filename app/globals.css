@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #10233b;
+}
+
+.container-page {
+  @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-orange px-6 py-3.5 text-base font-bold text-white shadow-card transition-transform duration-200 hover:scale-[1.03] hover:brightness-110 active:scale-95;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-navy px-6 py-3.5 text-base font-bold text-navy transition-colors duration-200 hover:bg-navy hover:text-white;
+}
+
+.section-title {
+  @apply text-3xl font-extrabold tracking-tight text-navy sm:text-4xl;
+}
