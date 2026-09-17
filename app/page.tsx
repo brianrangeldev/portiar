@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
+import Works from "@/components/Works";
 import AirwellBanner from "@/components/AirwellBanner";
 import WhyUs from "@/components/WhyUs";
 import ContactCta from "@/components/ContactCta";
@@ -12,6 +13,7 @@ export default function Home() {
       <Header />
       <Hero />
       <Services />
+      <Works />
       <AirwellBanner />
       <WhyUs />
       <ContactCta />

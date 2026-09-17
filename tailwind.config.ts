@@ -31,6 +31,27 @@ const config: Config = {
       boxShadow: {
         card: "0 10px 30px -10px rgba(0, 74, 173, 0.25)",
       },
+      keyframes: {
+        airflow: {
+          "0%": { transform: "translateY(-4px) scaleY(0.85)", opacity: "0" },
+          "20%": { opacity: "1" },
+          "80%": { opacity: "1" },
+          "100%": { transform: "translateY(30px) scaleY(1.15)", opacity: "0" },
+        },
+        breathe: {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.6" },
+          "50%": { transform: "scale(1.2)", opacity: "0.9" },
+        },
+        sway: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(4px)" },
+        },
+      },
+      animation: {
+        airflow: "airflow 2.2s ease-in-out infinite",
+        breathe: "breathe 5s ease-in-out infinite",
+        sway: "sway 3s ease-in-out infinite",
+      },
     },
   },
   plugins: [],

@@ -6,6 +6,7 @@ import {
   ThermometerSun,
   type LucideIcon,
 } from "lucide-react";
+import Reveal from "./Reveal";
 
 const services: {
   icon: LucideIcon;
@@ -48,7 +49,7 @@ export default function Services() {
   return (
     <section id="servicos" className="bg-white py-20 sm:py-28">
       <div className="container-page">
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal className="mx-auto max-w-2xl text-center">
           <span className="text-sm font-bold uppercase tracking-wider text-brand-orange">
             O que fazemos
           </span>
@@ -59,26 +60,25 @@ export default function Services() {
             Tudo o que precisa para o ar condicionado da sua casa ou negócio,
             num único parceiro de confiança.
           </p>
-        </div>
+        </Reveal>
 
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => {
+          {services.map((service, i) => {
             const Icon = service.icon;
             return (
-              <div
-                key={service.title}
-                className="group rounded-2xl border border-brand-light bg-white p-7 shadow-card transition-transform duration-200 hover:-translate-y-1"
-              >
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-navy text-white transition-colors group-hover:bg-brand-orange">
-                  <Icon className="h-6 w-6" strokeWidth={2} />
+              <Reveal key={service.title} delay={(i % 3) * 0.1}>
+                <div className="group h-full rounded-2xl border border-brand-light bg-white p-7 shadow-card transition-transform duration-200 hover:-translate-y-1">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-navy text-white transition-colors group-hover:bg-brand-orange">
+                    <Icon className="h-6 w-6" strokeWidth={2} />
+                  </div>
+                  <h3 className="mt-5 text-lg font-bold text-navy">
+                    {service.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                    {service.description}
+                  </p>
                 </div>
-                <h3 className="mt-5 text-lg font-bold text-navy">
-                  {service.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  {service.description}
-                </p>
-              </div>
+              </Reveal>
             );
           })}
         </div>

@@ -13,6 +13,9 @@ export default function Header() {
           <a href="#servicos" className="transition-colors hover:text-brand-orange">
             Serviços
           </a>
+          <a href="#trabalhos" className="transition-colors hover:text-brand-orange">
+            Trabalhos
+          </a>
           <a href="#airwell" className="transition-colors hover:text-brand-orange">
             Airwell
           </a>
