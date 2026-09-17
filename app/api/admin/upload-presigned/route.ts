@@ -3,8 +3,8 @@ import {
   type HandleUploadPresignedBody,
   handleUploadPresigned,
 } from "@vercel/blob/client";
-import { NextResponse } from "next/server";
-import { isRequestAuthorized } from "@/lib/admin-auth";
+import { NextRequest, NextResponse } from "next/server";
+import { ADMIN_SESSION_COOKIE, isSessionValid } from "@/lib/admin-auth";
 import { TRABALHOS_PREFIX, revalidateTrabalhos } from "@/lib/trabalhos";
 
 /**
@@ -13,24 +13,24 @@ import { TRABALHOS_PREFIX, revalidateTrabalhos } from "@/lib/trabalhos";
  * muitas fotos tiradas com telemóvel). Ver /docs/vercel-blob/vercel-signed-urls.
  *
  * Esta rota NÃO fica atrás do middleware de autenticação: a Vercel
- * chama-a de volta (tipo "blob.upload-completed") sem a password do
- * painel, depois de o ficheiro já estar na Blob store. Por isso a
- * verificação da password do admin é feita aqui manualmente, e só
- * para o pedido inicial do token (tipo "blob.generate-client-token").
+ * chama-a de volta (tipo "blob.upload-completed") sem o cookie de
+ * sessão do cliente, depois de o ficheiro já estar na Blob store. Por
+ * isso a verificação da sessão é feita aqui manualmente, e só para o
+ * pedido inicial do token (tipo "blob.generate-presigned-url").
  */
 export const dynamic = "force-dynamic";
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB (fotos de telemóvel)
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-export async function POST(request: Request): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadPresignedBody;
 
-  if (
-    body.type === "blob.generate-presigned-url" &&
-    !isRequestAuthorized(request)
-  ) {
-    return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
+  if (body.type === "blob.generate-presigned-url") {
+    const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
+    if (!(await isSessionValid(token))) {
+      return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
+    }
   }
 
   try {

@@ -34,9 +34,11 @@ SEO, usando a identidade visual e cores exatas do logotipo da marca.
 - Botões de contacto diretos para WhatsApp (cabeçalho, hero, secção de
   contacto e rodapé)
 - Secções: hero (com animação de ar condicionado a soprar), serviços,
-  trabalhos realizados (galeria de fotos), parceiro Airwell, porquê
+  trabalhos realizados (galeria de fotos — só aparece depois de o
+  cliente adicionar a primeira foto), parceiro Airwell, porquê
   escolher a PortiAr, chamada final para contacto
-- Painel `/admin` para o cliente adicionar ou remover fotos da secção
+- Painel `/admin` com login próprio (utilizador, palavra-passe e
+  botão "Sair") para o cliente adicionar ou remover fotos da secção
   "Trabalhos realizados" sozinho, sem mexer em código nem publicar
   nada (ver secção [Painel de fotos do cliente](#painel-de-fotos-do-cliente-admin))
 
@@ -74,26 +76,33 @@ app/
   icon.png         → favicon (gerado a partir do símbolo do logotipo)
   apple-icon.png   → ícone para iOS/Safari
   admin/page.tsx   → painel para o cliente gerir as fotos de trabalhos
-  api/admin/trabalhos/route.ts → API que faz upload/remoção no Vercel Blob
+  admin/login/page.tsx → ecrã de login do painel
+  api/admin/login/route.ts  → verifica utilizador/password e cria a sessão
+  api/admin/logout/route.ts → termina a sessão (botão "Sair")
+  api/admin/trabalhos/route.ts        → lista/remove fotos no Vercel Blob
+  api/admin/upload-presigned/route.ts → autoriza o upload direto do
+                                         browser para o Vercel Blob
 components/
   Header.tsx       → cabeçalho com navegação e botão WhatsApp
   Hero.tsx         → secção principal, com animação de ar a soprar
   Services.tsx     → grelha de serviços
-  Works.tsx        → galeria "Trabalhos realizados"
+  Works.tsx        → galeria "Trabalhos realizados" (fotos do cliente)
   AirwellBanner.tsx→ faixa do parceiro Airwell
   WhyUs.tsx        → selos de confiança
   ContactCta.tsx   → chamada final de contacto
   Footer.tsx       → rodapé
   Logo.tsx         → logotipo oficial (public/logo.png)
   Reveal.tsx       → wrapper de animação fade-in/fade-out ao rolar
-  admin/AdminTrabalhos.tsx → interface de upload/remoção do painel
+  admin/AdminTrabalhos.tsx  → interface de upload/remoção do painel
+  admin/AdminLoginForm.tsx  → formulário de login do painel
+  admin/AdminLogoutButton.tsx → botão "Sair" do painel
 lib/
   trabalhos.ts     → lê a lista de fotos guardadas no Vercel Blob
-middleware.ts      → protege /admin e /api/admin com autenticação
+  admin-auth.ts    → verificação de utilizador/password e sessão do painel
+middleware.ts      → protege /admin e /api/admin/trabalhos, exigindo sessão
 public/
   logo.png         → logotipo oficial (fundo transparente)
   og-image.png     → imagem de partilha do link (1200×630)
-  trabalhos/       → fotos originais de instalações concluídas
 ```
 
 ## Paleta de cores (cores exatas do logotipo oficial)
@@ -111,7 +120,9 @@ public/
 O cliente pode adicionar ou remover fotos da secção "Trabalhos
 realizados" sozinho, em `https://www.portiar.com/admin`, sem precisar
 de mexer em código nem pedir um novo deploy — a foto aparece no site
-assim que é enviada.
+assim que é enviada. Não há fotos fixas no código: a secção
+"Trabalhos realizados" só aparece no site depois de o cliente
+adicionar a primeira foto por aqui.
 
 ### Configuração necessária (feita uma única vez)
 
@@ -144,13 +155,18 @@ assim que é enviada.
 ### Como o cliente usa
 
 1. Abrir `https://www.portiar.com/admin` no telemóvel ou computador.
-2. Introduzir o utilizador/palavra-passe combinados (fica guardado no
-   browser, não pede sempre).
+2. Fica um ecrã de login próprio do site (não é o popup do browser):
+   introduzir o utilizador e a palavra-passe combinados. A sessão
+   fica guardada, não pede login de novo a cada visita.
 3. Clicar na área "Clica para escolher uma foto" para adicionar uma
    foto nova, ou no ícone do caixote do lixo para remover uma foto
    existente.
 4. Pronto — a alteração já aparece no site, sem precisar de avisar
    ninguém.
+5. O botão **"Sair"**, no canto superior direito do painel, termina a
+   sessão (por exemplo, ao usar um computador partilhado).
+
+## Contacto usado no site
 
 - WhatsApp: **+351 935 545 270**
 - Área de atuação: Portimão e arredores
@@ -161,10 +177,14 @@ assim que é enviada.
 - [x] Domínio definitivo: **portiar.com** (configurado em `app/layout.tsx`,
       `app/sitemap.ts` e `app/robots.ts`)
 - [ ] Apontar o DNS do domínio para a Vercel após o deploy
-- [ ] Ativar o Vercel Blob e definir `ADMIN_USER`/`ADMIN_PASSWORD`
-      para o painel `/admin` funcionar (ver secção acima)
-- [ ] Fotografias reais da equipa/mais serviços — o cliente já pode
-      adicioná-las sozinho pelo painel `/admin`
+- [ ] Ativar o Vercel Blob (store **Public**, não Private — ver
+      secção acima) e definir `ADMIN_USER`/`ADMIN_PASSWORD` para o
+      painel `/admin` funcionar
+- [ ] Adicionar as primeiras fotos de trabalhos pelo painel `/admin`
+      (a secção "Trabalhos realizados" fica escondida no site até lá)
+- [ ] A pasta `public/trabalhos/` com as 4 fotos antigas já não é
+      usada pelo código — podes apagá-la para poupar espaço (o
+      código já não faz referência a ela)
 
 ## Licença
 

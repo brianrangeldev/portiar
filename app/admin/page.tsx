@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { getTrabalhos, isBlobConfigured } from "@/lib/trabalhos";
+import { isBlobConfigured, listTrabalhosUncached } from "@/lib/trabalhos";
 import AdminTrabalhos from "@/components/admin/AdminTrabalhos";
+import AdminLogoutButton from "@/components/admin/AdminLogoutButton";
 
 export const metadata: Metadata = {
   title: "Painel de Fotos",
@@ -11,23 +12,28 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const trabalhos = await getTrabalhos();
+  const trabalhos = await listTrabalhosUncached();
   const blobConfigured = isBlobConfigured();
 
   return (
     <main className="min-h-screen bg-brand-light py-12">
       <div className="container-page">
-        <header className="mb-10">
-          <span className="text-sm font-bold uppercase tracking-wider text-brand-orange">
-            Painel PortiAr
-          </span>
-          <h1 className="section-title mt-2">Fotos de trabalhos realizados</h1>
-          <p className="mt-3 max-w-2xl text-slate-600">
-            Aqui podes adicionar novas fotos de instalações concluídas ou
-            remover fotos antigas. As alterações aparecem no site
-            automaticamente, sem precisar de mais nada — não é preciso
-            avisar ninguém nem esperar por uma atualização.
-          </p>
+        <header className="mb-10 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <span className="text-sm font-bold uppercase tracking-wider text-brand-orange">
+              Painel PortiAr
+            </span>
+            <h1 className="section-title mt-2">
+              Fotos de trabalhos realizados
+            </h1>
+            <p className="mt-3 max-w-2xl text-slate-600">
+              Aqui podes adicionar novas fotos de instalações concluídas ou
+              remover fotos antigas. As alterações aparecem no site
+              automaticamente, sem precisar de mais nada — não é preciso
+              avisar ninguém nem esperar por uma atualização.
+            </p>
+          </div>
+          <AdminLogoutButton />
         </header>
 
         {!blobConfigured && (
