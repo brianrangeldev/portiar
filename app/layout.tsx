@@ -32,7 +32,7 @@ export const metadata: Metadata = {
       "Instalação, manutenção e assistência técnica de ar condicionado para a sua casa ou negócio. Resposta rápida em Portimão e arredores.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "PortiAr Climatização - Ar condicionado para a sua casa ou negócio",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "PortiAr Climatização | Conforto em Todas as Estações",
     description:
       "Instalação, manutenção e assistência técnica de ar condicionado em Portimão e arredores.",
-    images: ["/og-image.jpg"],
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
