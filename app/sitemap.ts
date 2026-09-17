@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = "https://www.portiar.pt";
+  const siteUrl = "https://www.portiar.com";
   return [
     {
       url: siteUrl,

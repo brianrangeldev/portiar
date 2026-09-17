@@ -15,6 +15,8 @@ SEO, usando a identidade visual e cores exatas do logotipo da marca.
 - TypeScript
 - Tailwind CSS
 - [lucide-react](https://lucide.dev/) para ícones
+- [framer-motion](https://www.framer.com/motion/) para as animações de
+  entrada/saída ao fazer scroll
 
 ## Funcionalidades
 
@@ -22,51 +24,66 @@ SEO, usando a identidade visual e cores exatas do logotipo da marca.
 - SEO configurado: metadata completa, Open Graph, Twitter Card, dados
   estruturados (JSON-LD `HVACBusiness`), `sitemap.xml` e `robots.txt`
   gerados automaticamente
+- Imagem de partilha (Open Graph) e favicon com a marca, para quando o
+  link é partilhado no WhatsApp, iMessage, redes sociais, etc.
+- Animações suaves de fade-in/fade-out ao rolar a página (via
+  `components/Reveal.tsx`), otimizadas para mobile e respeitando a
+  preferência "reduzir movimento" do sistema
 - Botões de contacto diretos para WhatsApp (cabeçalho, hero, secção de
   contacto e rodapé)
-- Secções: hero, serviços, parceiro Airwell, porquê escolher a PortiAr,
-  chamada final para contacto
+- Secções: hero (com animação de ar condicionado a soprar), serviços,
+  trabalhos realizados (galeria de fotos), parceiro Airwell, porquê
+  escolher a PortiAr, chamada final para contacto
 
 ## Como correr localmente
 
-\`\`\`bash
+```bash
 npm install
 npm run dev
-\`\`\`
+```
 
-Abra [http://localhost:3000](http://portiar.pt)
+Abra [http://localhost:3000](http://localhost:3000)
 
 ## Build de produção
 
-\`\`\`bash
+```bash
 npm run build
 npm run start
-\`\`\`
+```
 
 Recomenda-se publicar na [Vercel](https://vercel.com) para o melhor
-desempenho e integração nativa com o Next.js.
+desempenho e integração nativa com o Next.js. O domínio definitivo do
+projeto é **portiar.com** — depois do deploy, basta apontar o domínio
+para a Vercel (registo `A`/`CNAME` conforme as instruções que a Vercel
+mostra ao adicionar o domínio nas definições do projeto).
 
 ## Estrutura do projeto
 
-\`\`\`
+```
 app/
-  layout.tsx      → metadata, SEO, JSON-LD
-  page.tsx        → ordem das secções da página
+  layout.tsx       → metadata, SEO, JSON-LD, Open Graph
+  page.tsx         → ordem das secções da página
   sitemap.ts       → sitemap.xml automático
   robots.ts        → robots.txt automático
   globals.css      → estilos base e classes utilitárias
+  icon.png         → favicon (gerado a partir do símbolo do logotipo)
+  apple-icon.png   → ícone para iOS/Safari
 components/
   Header.tsx       → cabeçalho com navegação e botão WhatsApp
-  Hero.tsx         → secção principal com chamada de ação
+  Hero.tsx         → secção principal, com animação de ar a soprar
   Services.tsx     → grelha de serviços
+  Works.tsx        → galeria "Trabalhos realizados"
   AirwellBanner.tsx→ faixa do parceiro Airwell
   WhyUs.tsx        → selos de confiança
   ContactCta.tsx   → chamada final de contacto
   Footer.tsx       → rodapé
   Logo.tsx         → logotipo oficial (public/logo.png)
+  Reveal.tsx       → wrapper de animação fade-in/fade-out ao rolar
 public/
   logo.png         → logotipo oficial (fundo transparente)
-\`\`\`
+  og-image.png     → imagem de partilha do link (1200×630)
+  trabalhos/       → fotos reais de instalações concluídas
+```
 
 ## Paleta de cores (cores exatas do logotipo oficial)
 
@@ -86,10 +103,11 @@ public/
 ## Pendências
 
 - [x] Logotipo oficial (`public/logo.png`)
-- [ ] Fotografias reais da equipa/serviços (atualmente usa apenas
-      formas em CSS/SVG, sem imagens externas)
-- [ ] Domínio definitivo (atualizado em `app/layout.tsx`, `app/sitemap.ts`
-      e `app/robots.ts`, atualmente `https://www.portiar.pt`)
+- [x] Domínio definitivo: **portiar.com** (configurado em `app/layout.tsx`,
+      `app/sitemap.ts` e `app/robots.ts`)
+- [ ] Apontar o DNS do domínio para a Vercel após o deploy
+- [ ] Fotografias reais da equipa/mais serviços, além das já adicionadas
+      na secção "Trabalhos realizados"
 
 ## Licença
 
