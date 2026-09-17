@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Reveal from "./Reveal";
+import { getTrabalhos } from "@/lib/trabalhos";
 
-const works = [
+// Fotos originais (fazem parte do código do site). Continuam visíveis
+// mesmo antes de o cliente adicionar alguma foto pelo painel /admin.
+const staticWorks = [
   {
     src: "/trabalhos/exterior-unidades-airwell.jpg",
     alt: "Duas unidades exteriores Airwell instaladas lado a lado numa varanda",
@@ -20,7 +23,18 @@ const works = [
   },
 ];
 
-export default function Works() {
+export default async function Works() {
+  // Fotos adicionadas pelo cliente através do painel /admin (Vercel Blob).
+  const trabalhosDoCliente = await getTrabalhos();
+
+  const works = [
+    ...staticWorks,
+    ...trabalhosDoCliente.map((trabalho) => ({
+      src: trabalho.url,
+      alt: "Foto de instalação de ar condicionado realizada pela PortiAr",
+    })),
+  ];
+
   return (
     <section id="trabalhos" className="bg-brand-light py-20 sm:py-28">
       <div className="container-page">
@@ -37,7 +51,7 @@ export default function Works() {
 
         <div className="mt-14 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {works.map((work, i) => (
-            <Reveal key={work.src} delay={i * 0.1} y={16}>
+            <Reveal key={work.src} delay={(i % 4) * 0.1} y={16}>
               <div className="group relative aspect-[3/4] overflow-hidden rounded-2xl bg-white shadow-card">
                 <Image
                   src={work.src}

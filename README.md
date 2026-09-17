@@ -17,6 +17,8 @@ SEO, usando a identidade visual e cores exatas do logotipo da marca.
 - [lucide-react](https://lucide.dev/) para ícones
 - [framer-motion](https://www.framer.com/motion/) para as animações de
   entrada/saída ao fazer scroll
+- [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) para
+  armazenar as fotos que o cliente adiciona pelo painel `/admin`
 
 ## Funcionalidades
 
@@ -34,6 +36,9 @@ SEO, usando a identidade visual e cores exatas do logotipo da marca.
 - Secções: hero (com animação de ar condicionado a soprar), serviços,
   trabalhos realizados (galeria de fotos), parceiro Airwell, porquê
   escolher a PortiAr, chamada final para contacto
+- Painel `/admin` para o cliente adicionar ou remover fotos da secção
+  "Trabalhos realizados" sozinho, sem mexer em código nem publicar
+  nada (ver secção [Painel de fotos do cliente](#painel-de-fotos-do-cliente-admin))
 
 ## Como correr localmente
 
@@ -68,6 +73,8 @@ app/
   globals.css      → estilos base e classes utilitárias
   icon.png         → favicon (gerado a partir do símbolo do logotipo)
   apple-icon.png   → ícone para iOS/Safari
+  admin/page.tsx   → painel para o cliente gerir as fotos de trabalhos
+  api/admin/trabalhos/route.ts → API que faz upload/remoção no Vercel Blob
 components/
   Header.tsx       → cabeçalho com navegação e botão WhatsApp
   Hero.tsx         → secção principal, com animação de ar a soprar
@@ -79,10 +86,14 @@ components/
   Footer.tsx       → rodapé
   Logo.tsx         → logotipo oficial (public/logo.png)
   Reveal.tsx       → wrapper de animação fade-in/fade-out ao rolar
+  admin/AdminTrabalhos.tsx → interface de upload/remoção do painel
+lib/
+  trabalhos.ts     → lê a lista de fotos guardadas no Vercel Blob
+middleware.ts      → protege /admin e /api/admin com autenticação
 public/
   logo.png         → logotipo oficial (fundo transparente)
   og-image.png     → imagem de partilha do link (1200×630)
-  trabalhos/       → fotos reais de instalações concluídas
+  trabalhos/       → fotos originais de instalações concluídas
 ```
 
 ## Paleta de cores (cores exatas do logotipo oficial)
@@ -95,7 +106,45 @@ public/
 | Brand Orange | `#d17c28` | Chamadas de ação, acentos           |
 | Brand Light  | `#eaf4fb` | Fundos claros, secções alternadas   |
 
-## Contacto usado no site
+## Painel de fotos do cliente (`/admin`)
+
+O cliente pode adicionar ou remover fotos da secção "Trabalhos
+realizados" sozinho, em `https://www.portiar.com/admin`, sem precisar
+de mexer em código nem pedir um novo deploy — a foto aparece no site
+assim que é enviada.
+
+### Configuração necessária (feita uma única vez)
+
+1. **Ativar o armazenamento de imagens (Vercel Blob):**
+   No painel da Vercel, dentro do projeto → separador **Storage** →
+   **Create Database** → escolher **Blob** → ligar ("Connect") ao
+   projeto `portiar`. A Vercel cria automaticamente a variável de
+   ambiente `BLOB_READ_WRITE_TOKEN` — não é preciso copiar nada à mão.
+
+2. **Definir a palavra-passe do painel:**
+   Em Project Settings → **Environment Variables**, adicionar:
+
+   | Nome             | Valor                          |
+   | ---------------- | ------------------------------- |
+   | `ADMIN_USER`     | ex.: `portiar`                  |
+   | `ADMIN_PASSWORD` | uma palavra-passe à tua escolha |
+
+   Sem estas duas variáveis definidas, o painel `/admin` fica
+   bloqueado por omissão (nunca fica acessível sem password).
+
+3. Fazer um novo deploy (ou "Redeploy") para as variáveis passarem a
+   valer.
+
+### Como o cliente usa
+
+1. Abrir `https://www.portiar.com/admin` no telemóvel ou computador.
+2. Introduzir o utilizador/palavra-passe combinados (fica guardado no
+   browser, não pede sempre).
+3. Clicar na área "Clica para escolher uma foto" para adicionar uma
+   foto nova, ou no ícone do caixote do lixo para remover uma foto
+   existente.
+4. Pronto — a alteração já aparece no site, sem precisar de avisar
+   ninguém.
 
 - WhatsApp: **+351 935 545 270**
 - Área de atuação: Portimão e arredores
@@ -106,8 +155,10 @@ public/
 - [x] Domínio definitivo: **portiar.com** (configurado em `app/layout.tsx`,
       `app/sitemap.ts` e `app/robots.ts`)
 - [ ] Apontar o DNS do domínio para a Vercel após o deploy
-- [ ] Fotografias reais da equipa/mais serviços, além das já adicionadas
-      na secção "Trabalhos realizados"
+- [ ] Ativar o Vercel Blob e definir `ADMIN_USER`/`ADMIN_PASSWORD`
+      para o painel `/admin` funcionar (ver secção acima)
+- [ ] Fotografias reais da equipa/mais serviços — o cliente já pode
+      adicioná-las sozinho pelo painel `/admin`
 
 ## Licença
 
