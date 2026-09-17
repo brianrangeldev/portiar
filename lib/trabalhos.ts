@@ -19,10 +19,22 @@ export type Trabalho = {
   uploadedAt: string;
 };
 
+/**
+ * Uma Blob store ligada ao projeto na Vercel autentica-se por omissão
+ * via OIDC (variável `BLOB_STORE_ID` + `VERCEL_OIDC_TOKEN`, este último
+ * gerido automaticamente pela Vercel e nunca visível nas Environment
+ * Variables). Só em código a correr fora da Vercel (ou tokens gerados
+ * à mão) é que existe a variável estática `BLOB_READ_WRITE_TOKEN`.
+ * Por isso verificamos as duas.
+ */
+export function isBlobConfigured() {
+  return Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN);
+}
+
 async function listTrabalhosFromBlob(): Promise<Trabalho[]> {
-  // Sem token configurado (ex.: ambiente local sem Blob store ligado),
-  // devolve lista vazia em vez de rebentar o build.
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  // Sem a Blob store ligada (ex.: ambiente local), devolve lista vazia
+  // em vez de rebentar o build.
+  if (!isBlobConfigured()) {
     return [];
   }
 

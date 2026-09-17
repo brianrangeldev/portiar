@@ -118,8 +118,14 @@ assim que é enviada.
 1. **Ativar o armazenamento de imagens (Vercel Blob):**
    No painel da Vercel, dentro do projeto → separador **Storage** →
    **Create Database** → escolher **Blob** → ligar ("Connect") ao
-   projeto `portiar`. A Vercel cria automaticamente a variável de
-   ambiente `BLOB_READ_WRITE_TOKEN` — não é preciso copiar nada à mão.
+   projeto `portiar`. A Vercel liga a store por **OIDC** e cria
+   automaticamente as variáveis `BLOB_STORE_ID` e `BLOB_WEBHOOK_PUBLIC_KEY`
+   (visíveis em Environment Variables) — não é preciso copiar nem
+   configurar nenhum token à mão. A variável `VERCEL_OIDC_TOKEN`, que
+   trata da autenticação em si, é gerida pela própria Vercel e não
+   aparece na lista de variáveis do projeto.
+   Mantém a opção **"Enable access to System Environment Variables"**
+   ativada (é o que permite o site usar essa autenticação).
 
 2. **Definir a palavra-passe do painel:**
    Em Project Settings → **Environment Variables**, adicionar:

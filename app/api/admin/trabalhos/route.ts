@@ -3,6 +3,7 @@ import { put, del } from "@vercel/blob";
 import {
   TRABALHOS_PREFIX,
   getTrabalhos,
+  isBlobConfigured,
   revalidateTrabalhos,
 } from "@/lib/trabalhos";
 
@@ -19,7 +20,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  if (!isBlobConfigured()) {
     return NextResponse.json(
       {
         error:
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  if (!isBlobConfigured()) {
     return NextResponse.json(
       {
         error:

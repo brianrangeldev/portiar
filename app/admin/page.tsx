@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTrabalhos } from "@/lib/trabalhos";
+import { getTrabalhos, isBlobConfigured } from "@/lib/trabalhos";
 import AdminTrabalhos from "@/components/admin/AdminTrabalhos";
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const trabalhos = await getTrabalhos();
-  const blobConfigured = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+  const blobConfigured = isBlobConfigured();
 
   return (
     <main className="min-h-screen bg-brand-light py-12">
