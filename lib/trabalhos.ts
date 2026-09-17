@@ -31,7 +31,13 @@ export function isBlobConfigured() {
   return Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN);
 }
 
-async function listTrabalhosFromBlob(): Promise<Trabalho[]> {
+/**
+ * Lê sempre o estado atual do Vercel Blob, sem cache. Usada pelo
+ * painel /admin (para o próprio cliente ver logo a foto que acabou
+ * de enviar, sem depender do tempo do callback de "upload concluído"
+ * invalidar a cache a tempo).
+ */
+export async function listTrabalhosUncached(): Promise<Trabalho[]> {
   // Sem a Blob store ligada (ex.: ambiente local), devolve lista vazia
   // em vez de rebentar o build.
   if (!isBlobConfigured()) {
@@ -64,7 +70,7 @@ async function listTrabalhosFromBlob(): Promise<Trabalho[]> {
 // a cada visita — só volta a fazê-lo quando o painel /admin invalida
 // a tag "trabalhos" a seguir a um upload ou remoção.
 export const getTrabalhos = unstable_cache(
-  listTrabalhosFromBlob,
+  listTrabalhosUncached,
   ["trabalhos-list"],
   { tags: [TRABALHOS_CACHE_TAG] }
 );

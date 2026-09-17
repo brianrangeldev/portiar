@@ -2,8 +2,21 @@
 
 import { useRef, useState, useTransition } from "react";
 import Image from "next/image";
+import { uploadPresigned } from "@vercel/blob/client";
 import { Loader2, Trash2, Upload } from "lucide-react";
-import type { Trabalho } from "@/lib/trabalhos";
+import { TRABALHOS_PREFIX, type Trabalho } from "@/lib/trabalhos";
+
+const EXTENSION_BY_TYPE: Record<string, string> = {
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/jpeg": "jpg",
+};
+
+function uniquePathnameFor(file: File) {
+  const extension = EXTENSION_BY_TYPE[file.type] ?? "jpg";
+  const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return `${TRABALHOS_PREFIX}${uniqueId}.${extension}`;
+}
 
 type AdminTrabalhosProps = {
   initialTrabalhos: Trabalho[];
@@ -32,22 +45,23 @@ export default function AdminTrabalhos({
 
     setError(null);
     startUploadTransition(async () => {
-      const formData = new FormData();
-      formData.append("file", file);
+      try {
+        // Upload direto do browser para o Vercel Blob (não passa pelo
+        // nosso servidor), para não esbarrar no limite de tamanho de
+        // pedido dos Vercel Functions — fotos de telemóvel passam
+        // facilmente dos 4.5 MB permitidos aí.
+        await uploadPresigned(uniquePathnameFor(file), file, {
+          access: "public",
+          handleUploadUrl: "/api/admin/upload-presigned",
+        });
 
-      const res = await fetch("/api/admin/trabalhos", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        setError(data?.error ?? "Não foi possível enviar a foto.");
-        return;
+        await refreshList();
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Não foi possível enviar a foto."
+        );
       }
-
-      await refreshList();
-      if (fileInputRef.current) fileInputRef.current.value = "";
     });
   }
 
@@ -93,7 +107,7 @@ export default function AdminTrabalhos({
           {isUploading ? "A enviar foto..." : "Clica para escolher uma foto"}
         </span>
         <span className="text-sm text-slate-500">
-          JPG, PNG ou WEBP · máximo 8 MB
+          JPG, PNG ou WEBP · máximo 20 MB
         </span>
       </label>
 
