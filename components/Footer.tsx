@@ -35,6 +35,18 @@ export default function Footer() {
             <span>&copy; {new Date().getFullYear()} PortiAr Climatização</span>
           </div>
         </div>
+
+        <p className="mt-10 border-t border-brand-light pt-6 text-center text-xs text-slate-500">
+          Desenvolvido por{" "}
+          <a
+            href="https://bridamo.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-navy underline underline-offset-2"
+          >
+            Bridamo
+          </a>
+        </p>
       </Reveal>
     </footer>
   );
